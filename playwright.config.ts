@@ -16,6 +16,6 @@ export default defineConfig({
     command: 'node scripts/serve-test.mjs',
     url: 'http://127.0.0.1:4173/offline-board-games/',
     timeout: 120_000,
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: false,
   },
 })

@@ -2,6 +2,7 @@ import { isRecord } from '../games/core/types'
 import { fingerprint } from '../networking/signaling'
 import { isPartyId, normalizeRules, partyCatalog } from './catalog'
 import { requireRule, type PartyView } from './types'
+import { validateCasualView } from './casualValidation'
 
 const arrays = [
   'names',
@@ -95,13 +96,14 @@ export function validateView(v: unknown): v is PartyView {
   )
     return false
   return (
+    validateCasualView(v as unknown as PartyView) &&
     Number(v.seat) >= 0 &&
     Number(v.seat) < n &&
     Number(v.turn) >= 0 &&
     Number(v.turn) < n &&
     Number(v.step) <= 10000 &&
     Number(v.stockCount) >= 0 &&
-    Number(v.stockCount) <= 53 &&
+    Number(v.stockCount) <= (v.game === 'mini-mahjong' ? 136 : 53) &&
     Number(v.activeSuit) >= 0 &&
     Number(v.activeSuit) <= 3 &&
     Number(v.claim) >= 1 &&
@@ -109,16 +111,29 @@ export function validateView(v: unknown): v is PartyView {
     Number(v.roll) >= 0 &&
     Number(v.roll) <= 6 &&
     Number(v.lastPlayer) < n &&
-    (v.board as number[]).every((x) => x >= -2 && x <= (v.game === 'mancala' ? 72 : 52)) &&
-    (v.selected as number[]).every((x) => x >= 0 && x < 120) &&
+    (v.board as number[]).every(
+      (x) =>
+        x >= -2 &&
+        x <=
+          (v.game === 'mini-mahjong'
+            ? 135
+            : v.game === 'number-mine'
+              ? 101
+              : v.game === 'mancala'
+                ? 72
+                : 52),
+    ) &&
+    (v.selected as number[]).every((x) => x >= 0 && x < (v.game === 'mini-mahjong' ? 136 : 120)) &&
     (v.lock as number[]).every((x) => x >= 0 && x <= 3) &&
     ['counts', 'scores', 'roundScores'].every((k) => (v[k] as unknown[]).length === n) &&
     ['winners', 'ranking', 'losers', 'trickPlayers'].every((k) =>
       (v[k] as number[]).every((p) => p >= 0 && p < n),
     ) &&
-    (v.hand as number[]).every((c) => c >= 0 && c <= 52) &&
+    (v.hand as number[]).every((c) => c >= 0 && c <= (v.game === 'mini-mahjong' ? 135 : 52)) &&
     new Set(v.hand as number[]).size === (v.hand as number[]).length &&
-    (v.table as number[]).every((c) => c >= 0 && c <= 52) &&
+    (v.table as number[]).every(
+      (c) => c >= 0 && c <= (v.game === 'mini-mahjong' ? 135 : v.game === 'number-mine' ? 100 : 52),
+    ) &&
     (v.counts as number[]).every((c) => c >= 0 && c <= 53)
   )
 }

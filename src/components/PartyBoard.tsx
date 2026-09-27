@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { TabletopBoard } from './TabletopBoard'
+import { CasualBoard } from './CasualBoard'
+import { isCasualId } from '../party/casualCatalog'
 import {
   cardText,
   rank,
@@ -38,6 +40,7 @@ export function PartyBoard({
       {cardText(c)}
     </button>
   )
+  if (isCasualId(v.game)) return <CasualBoard view={v} enabled={enabled} onAction={onAction} />
   if (v.phase === 'finished')
     return (
       <div className="panel">

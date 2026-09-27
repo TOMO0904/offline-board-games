@@ -10,6 +10,7 @@ import { PartyBoard } from '../components/PartyBoard'
 import { PartyConnection } from '../components/PartyConnection'
 import { playMoveSound } from '../hooks/sound'
 import type { GameSetup } from './SetupPage'
+import { isCasualId } from '../party/casualCatalog'
 export function PartyPage({
   game,
   mode,
@@ -35,9 +36,26 @@ export function PartyPage({
     connected =
       mode === 'local' ||
       !!(room?.online.every(Boolean) && (network.role === 'host' || network.guestLink?.open))
-  const privateGame = !['memory', 'pig', 'boxes', 'mancala', 'nim', 'yacht'].includes(game),
+  const privateGame = ![
+      'memory',
+      'pig',
+      'boxes',
+      'mancala',
+      'nim',
+      'yacht',
+      'hit-blow',
+      'high-low',
+      'number-mine',
+      'count-21',
+      'tic-tac-toe',
+    ].includes(game),
     covered =
-      mode === 'local' && privateGame && view?.phase !== 'finished' && unlocked !== view?.turn
+      mode === 'local' &&
+      privateGame &&
+      view?.phase !== 'finished' &&
+      !(game === 'word-wolf' && (view?.phase === 'challenge' || view?.phase === 'round-end')) &&
+      !(game === 'rps' && view?.phase === 'reveal') &&
+      unlocked !== view?.turn
   const historyId =
     mode === 'local'
       ? id
@@ -61,7 +79,12 @@ export function PartyPage({
       if (mode === 'local') {
         const next = applyParty(local, local.turn, a)
         setLocal(next)
-        if (next.turn !== local.turn) setUnlocked(-1)
+        if (
+          next.turn !== local.turn ||
+          (game === 'word-wolf' && next.phase !== local.phase) ||
+          next.round !== local.round
+        )
+          setUnlocked(-1)
       } else if (network.host) network.host.act(0, a)
       else network.guest?.act(a)
       setError('')
@@ -113,13 +136,19 @@ export function PartyPage({
                   {mode === 'nearby' && i === view.seat ? '（あなた）' : ''}
                 </strong>
                 <small>
-                  {['pig', 'memory', 'boxes', 'go-fish', 'mancala', 'yacht'].includes(game)
-                    ? `${view.scores[i]}点`
-                    : game === 'hearts'
-                      ? `失点 ${view.scores[i]}（今 ${view.roundScores[i]}）`
-                      : game === 'nim'
-                        ? '順番に石を取ろう'
-                        : `手札 ${view.counts[i]}枚`}
+                  {isCasualId(game)
+                    ? game === 'mini-mahjong'
+                      ? `アガリ ${view.scores[i]}回`
+                      : ['number-mine', 'count-21', 'tic-tac-toe', 'hit-blow'].includes(game)
+                        ? `席${i + 1}`
+                        : `${view.scores[i]}点`
+                    : ['pig', 'memory', 'boxes', 'go-fish', 'mancala', 'yacht'].includes(game)
+                      ? `${view.scores[i]}点`
+                      : game === 'hearts'
+                        ? `失点 ${view.scores[i]}（今 ${view.roundScores[i]}）`
+                        : game === 'nim'
+                          ? '順番に石を取ろう'
+                          : `手札 ${view.counts[i]}枚`}
                   {view.ranking.includes(i) ? '・上がり' : ''}
                   {view.losers.includes(i) ? '・脱落' : ''}
                   {game === 'sevens' ? `・パス ${view.passed[i]}回` : ''}
@@ -131,9 +160,9 @@ export function PartyPage({
             <section className="privacy-cover panel">
               <span aria-hidden="true">▣</span>
               <h2>{view.names[view.turn]}さんに渡してください</h2>
-              <p>ほかの人に手札が見えない向きで操作してください。</p>
+              <p>ほかの人に手札やお題・選択が見えない向きで操作してください。</p>
               <button className="primary" onClick={() => setUnlocked(view.turn)}>
-                自分の手札を表示
+                {isCasualId(game) ? '自分の画面を表示' : '自分の手札を表示'}
               </button>
             </section>
           ) : (

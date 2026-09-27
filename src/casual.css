@@ -1,0 +1,135 @@
+.casual-board {
+  display: grid;
+  gap: 16px;
+}
+.casual-panel {
+  display: grid;
+  gap: 14px;
+}
+.casual-panel p {
+  margin: 0;
+}
+.casual-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.casual-buttons button {
+  min-width: 48px;
+  min-height: 48px;
+  flex: 1 1 64px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--text);
+}
+.casual-buttons button.selected,
+.mahjong-tile.selected {
+  outline: 3px solid var(--focus);
+  outline-offset: 1px;
+}
+.code-slots {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+.code-slots span {
+  font-size: 1.8rem;
+  font-weight: 700;
+  padding: 8px 16px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+.big-number {
+  font-size: clamp(1.5rem, 6vw, 2.5rem);
+  font-weight: 700;
+  text-align: center;
+}
+.guess-history {
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+.guess-history li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+}
+.secret-prompt {
+  padding: 26px 12px;
+  border: 2px dashed var(--line);
+  border-radius: 16px;
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.result-list {
+  padding-left: 20px;
+  line-height: 1.9;
+}
+.tic-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  max-width: 360px;
+  margin: auto;
+}
+.tic-grid button {
+  aspect-ratio: 1;
+  min-height: 64px;
+  font-size: 2.5rem;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 12px;
+}
+.tic-grid button:disabled {
+  opacity: 1;
+}
+.mahjong-tiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0;
+}
+.mahjong-tile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 56px;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-bottom: 4px solid var(--green);
+  border-radius: 7px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+.mahjong-tile:disabled {
+  opacity: 1;
+}
+.mahjong-tile.drawn-tile {
+  border: 2px solid var(--green);
+  border-bottom-width: 4px;
+}
+.mahjong-tile.small-tile {
+  min-width: 32px;
+  min-height: 38px;
+  font-size: 0.85rem;
+  padding: 3px;
+}
+.mahjong-river {
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+.mahjong-river .mahjong-tiles {
+  gap: 4px;
+}

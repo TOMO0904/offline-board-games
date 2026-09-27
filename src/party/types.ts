@@ -1,6 +1,11 @@
 import type { PartyId, PartyRules } from './catalog'
 export interface PartyAction {
   type:
+    | 'guess'
+    | 'choose'
+    | 'vote'
+    | 'place'
+    | 'discard'
     | 'play'
     | 'pass'
     | 'draw'

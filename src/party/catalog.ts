@@ -1,6 +1,8 @@
 import { isGameId, type GameId } from '../games/core/types'
+import { casualCatalog, casualIds } from './casualCatalog'
 
 export const partyIds = [
+  ...casualIds,
   'daifugo',
   'sevens',
   'old-maid',
@@ -38,6 +40,7 @@ export interface PartyInfo {
   options: RuleOption[]
 }
 export const partyCatalog: Record<PartyId, PartyInfo> = {
+  ...casualCatalog,
   mancala: {
     name: 'マンカラ（カラハ）',
     mark: '•••',

@@ -2,6 +2,7 @@ import { isRecord } from '../games/core/types'
 import { normalizeRules, partyCatalog, type PartyId } from './catalog'
 import { playDaifugo } from './daifugo'
 import { initTabletop, playTabletop } from './tabletop'
+import { initCasual, playCasual } from './casual'
 import {
   cardText,
   deck,
@@ -116,6 +117,17 @@ export function createParty(
   }
   deal(s, [])
   switch (game) {
+    case 'mini-mahjong':
+    case 'hit-blow':
+    case 'high-low':
+    case 'number-mine':
+    case 'rps':
+    case 'word-wolf':
+    case 'charades':
+    case 'count-21':
+    case 'tic-tac-toe':
+      initCasual(s, rng)
+      break
     case 'daifugo':
       deal(s, shuffle(deck(true), rng))
       s.turn = s.hands.findIndex((h) => h.includes(28))
@@ -183,6 +195,11 @@ export function validateAction(a: unknown): a is PartyAction {
   return (
     isRecord(a) &&
     [
+      'guess',
+      'choose',
+      'vote',
+      'place',
+      'discard',
       'play',
       'pass',
       'draw',
@@ -203,11 +220,11 @@ export function validateAction(a: unknown): a is PartyAction {
     (a.cards === undefined ||
       (Array.isArray(a.cards) &&
         a.cards.length <= 53 &&
-        a.cards.every((c) => Number.isInteger(c) && c >= 0 && c <= 52) &&
+        Array.from(a.cards).every((c) => Number.isInteger(c) && c >= 0 && c <= 52) &&
         new Set(a.cards).size === a.cards.length)) &&
     ['index', 'target', 'rank', 'suit'].every(
       (k) =>
-        a[k] === undefined || (Number.isInteger(a[k]) && Number(a[k]) >= 0 && Number(a[k]) <= 100),
+        a[k] === undefined || (Number.isInteger(a[k]) && Number(a[k]) >= 0 && Number(a[k]) <= 135),
     )
   )
 }
@@ -311,6 +328,17 @@ export function applyParty(
     a = action,
     p = seat
   switch (s.game) {
+    case 'mini-mahjong':
+    case 'hit-blow':
+    case 'high-low':
+    case 'number-mine':
+    case 'rps':
+    case 'word-wolf':
+    case 'charades':
+    case 'count-21':
+    case 'tic-tac-toe':
+      playCasual(s, a, rng)
+      break
     case 'mancala':
     case 'nim':
     case 'dominoes':
@@ -584,7 +612,7 @@ export function partyView(s: PartyState, seat: number): PartyView {
     jBack: s.jBack,
     lock: s.lock,
     activeSuit: s.activeSuit,
-    selected: s.selected,
+    selected: s.game === 'mini-mahjong' && seat !== s.turn ? [] : s.selected,
     claim: s.claim,
     pendingCount: s.game === 'doubt' ? s.table.length : 0,
     lastPlayer: s.lastPlayer,

@@ -187,9 +187,14 @@ export function HomePage({
                   <div className="game-card-body">
                     <div className="game-card-meta">
                       <span>
-                        {partyCatalog[id].min}–{partyCatalog[id].max} PLAYERS
+                        {partyCatalog[id].min === partyCatalog[id].max
+                          ? partyCatalog[id].min
+                          : `${partyCatalog[id].min}–${partyCatalog[id].max}`}{' '}
+                        PLAYERS
                       </span>
-                      <span>ルールを選べる</span>
+                      <span>
+                        {partyCatalog[id].options.length ? 'ルールを選べる' : 'すぐ遊べる'}
+                      </span>
                     </div>
                     <h3>{partyCatalog[id].name}</h3>
                     <p>{partyCatalog[id].description}</p>

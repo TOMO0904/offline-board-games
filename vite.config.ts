@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
+import { partyIds } from './src/party/catalog'
 
 const base = process.env.BASE_PATH || '/'
 export default defineConfig({
@@ -19,7 +20,7 @@ export default defineConfig({
         id: base,
         name: 'Offline Board Games',
         short_name: 'Offline Games',
-        description: '圏外でも、みんなで遊ぼう。20ゲーム・2〜7人。',
+        description: `圏外でも、みんなで遊ぼう。${5 + partyIds.length}ゲーム・2〜7人。`,
         lang: 'ja',
         start_url: base,
         scope: base,
