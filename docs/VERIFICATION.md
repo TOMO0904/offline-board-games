@@ -1,6 +1,12 @@
 # Verification and device checklist
 
-検証日: 2026-09-26〜27。Windows / Node.js 24.21.0 / Chromium 153（Playwright 1.63.0の同梱ブラウザ）。ブラウザのUser-Agent変更は実際のSafari/iOSでの試験ではありません。
+検証日: 2026-09-26〜28。Windows / Node.js 24.21.0 / Chromium 153（Playwright 1.63.0の同梱ブラウザ）。ブラウザのUser-Agent変更は実際のSafari/iOSでの試験ではありません。
+
+## Vercel公開確認
+
+GitHub Actions run `36359097127` のbuildジョブも成功しました（依存導入、lint、型検査、Unit Test、14件のブラウザテスト、サブパスbuild）。非公開リポジトリのPagesデプロイは設定どおりスキップしています。
+
+2026-09-28に個人用非公開リポジトリ `TOMO0904/offline-board-games` の `3513aba` をVercelへ本番デプロイ。固定URLは https://offline-board-games.vercel.app/ です。ログイン不要のHTTP 200、全29ゲーム、manifestのルートscope/start_urlとstandalone、Service Workerの準備完了を確認しました。公開URLを390px幅のChromiumで開き、全面オフラインへ切り替えて再読み込みし、4人のかんたん麻雀で手牌表示と捨て牌・次の人への目隠しまで操作できました。画面エラー・別オリジンへの通信・横はみ出しはありませんでした。
 
 ## 実行結果
 
@@ -56,7 +62,7 @@ Chromiumの `context.setOffline(true)` を**接続開始前**に適用すると�
 - バックグラウンド・画面ロック・省電力・ストレージ圧迫下のOSの挙動。
 - 7台の実スマートフォンを接続した際のQR交換、電池消費、長時間プレイ、OSの同時接続制限。
 - 実機の画面ロック・切断復帰・通信遅延を伴う対局時計。時計は大会向けの精度・裁定を保証しません。
-- 実際のGitHubリポジトリでのActions実行とPages公開。非公開リポジトリの保存先はTOMO0904です。Pagesデプロイは非公開リポジトリでは明示的に有効にするまでスキップします。Vercelの公開URLと実際のデプロイ結果は未確認です。
+- GitHub Pagesへの公開。現在の公開先はVercelです。Pagesデプロイは非公開リポジトリでは明示的に有効にするまでスキップします。
 
 ## 実機マトリクス
 
