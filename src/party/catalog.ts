@@ -1,7 +1,9 @@
 import { isGameId, type GameId } from '../games/core/types'
+import { economyCatalog, economyIds } from './economyCatalog'
 import { casualCatalog, casualIds } from './casualCatalog'
 
 export const partyIds = [
+  ...economyIds,
   ...casualIds,
   'daifugo',
   'sevens',
@@ -40,6 +42,7 @@ export interface PartyInfo {
   options: RuleOption[]
 }
 export const partyCatalog: Record<PartyId, PartyInfo> = {
+  ...economyCatalog,
   ...casualCatalog,
   mancala: {
     name: 'マンカラ（カラハ）',

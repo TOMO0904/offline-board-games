@@ -10,6 +10,8 @@ import { PartyBoard } from '../components/PartyBoard'
 import { PartyConnection } from '../components/PartyConnection'
 import { playMoveSound } from '../hooks/sound'
 import type { GameSetup } from './SetupPage'
+import { isEconomyId } from '../party/economyCatalog'
+import { assetValue } from '../party/economy'
 import { isCasualId } from '../party/casualCatalog'
 export function PartyPage({
   game,
@@ -44,17 +46,14 @@ export function PartyPage({
       'nim',
       'yacht',
       'hit-blow',
-      'high-low',
-      'number-mine',
-      'count-21',
-      'tic-tac-toe',
+      'life-journey',
+      'island-market',
     ].includes(game),
     covered =
       mode === 'local' &&
       privateGame &&
       view?.phase !== 'finished' &&
       !(game === 'word-wolf' && (view?.phase === 'challenge' || view?.phase === 'round-end')) &&
-      !(game === 'rps' && view?.phase === 'reveal') &&
       unlocked !== view?.turn
   const historyId =
     mode === 'local'
@@ -136,19 +135,21 @@ export function PartyPage({
                   {mode === 'nearby' && i === view.seat ? '（あなた）' : ''}
                 </strong>
                 <small>
-                  {isCasualId(game)
-                    ? game === 'mini-mahjong'
-                      ? `アガリ ${view.scores[i]}回`
-                      : ['number-mine', 'count-21', 'tic-tac-toe', 'hit-blow'].includes(game)
-                        ? `席${i + 1}`
-                        : `${view.scores[i]}点`
-                    : ['pig', 'memory', 'boxes', 'go-fish', 'mancala', 'yacht'].includes(game)
-                      ? `${view.scores[i]}点`
-                      : game === 'hearts'
-                        ? `失点 ${view.scores[i]}（今 ${view.roundScores[i]}）`
-                        : game === 'nim'
-                          ? '順番に石を取ろう'
-                          : `手札 ${view.counts[i]}枚`}
+                  {isEconomyId(game)
+                    ? `総資産 ${assetValue(view, i)}${game === 'life-journey' ? '万' : 'コイン'}`
+                    : isCasualId(game)
+                      ? game === 'mini-mahjong'
+                        ? `アガリ ${view.scores[i]}回`
+                        : game === 'hit-blow'
+                          ? `席${i + 1}`
+                          : `${view.scores[i]}点`
+                      : ['pig', 'memory', 'boxes', 'go-fish', 'mancala', 'yacht'].includes(game)
+                        ? `${view.scores[i]}点`
+                        : game === 'hearts'
+                          ? `失点 ${view.scores[i]}（今 ${view.roundScores[i]}）`
+                          : game === 'nim'
+                            ? '順番に石を取ろう'
+                            : `手札 ${view.counts[i]}枚`}
                   {view.ranking.includes(i) ? '・上がり' : ''}
                   {view.losers.includes(i) ? '・脱落' : ''}
                   {game === 'sevens' ? `・パス ${view.passed[i]}回` : ''}

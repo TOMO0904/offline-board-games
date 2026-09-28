@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { TabletopBoard } from './TabletopBoard'
+import { EconomyBoard } from './EconomyBoard'
+import { isEconomyId } from '../party/economyCatalog'
 import { CasualBoard } from './CasualBoard'
 import { isCasualId } from '../party/casualCatalog'
 import {
@@ -40,6 +42,7 @@ export function PartyBoard({
       {cardText(c)}
     </button>
   )
+  if (isEconomyId(v.game)) return <EconomyBoard v={v} enabled={enabled} act={act} />
   if (isCasualId(v.game)) return <CasualBoard view={v} enabled={enabled} onAction={onAction} />
   if (v.phase === 'finished')
     return (

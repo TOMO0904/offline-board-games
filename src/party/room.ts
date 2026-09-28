@@ -119,7 +119,11 @@ export class PartyHost {
         this.publish(seat)
       } else if (p.t === 'ping') this.packet(seat, 'pong')
       else if (p.t === 'action' || p.t === 'vote') {
-        if (p.seq !== this.sequence) {
+        if (
+          p.t === 'vote'
+            ? p.seq > this.sequence || p.data.generation !== this.generation
+            : p.seq !== this.sequence
+        ) {
           this.publish(seat)
           return
         }
@@ -170,7 +174,7 @@ export class PartyGuest {
     this.send('action', { action })
   }
   vote() {
-    this.send('vote')
+    this.send('vote', { generation: this.generation })
   }
   receive(raw: string) {
     try {

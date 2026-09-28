@@ -2,6 +2,7 @@ import { isRecord } from '../games/core/types'
 import { fingerprint } from '../networking/signaling'
 import { isPartyId, normalizeRules, partyCatalog } from './catalog'
 import { requireRule, type PartyView } from './types'
+import { validateEconomyView } from './economyValidation'
 import { validateCasualView } from './casualValidation'
 
 const arrays = [
@@ -13,6 +14,7 @@ const arrays = [
   'counts',
   'table',
   'board',
+  'economy',
   'scores',
   'roundScores',
   'passed',
@@ -97,6 +99,7 @@ export function validateView(v: unknown): v is PartyView {
     return false
   return (
     validateCasualView(v as unknown as PartyView) &&
+    validateEconomyView(v as unknown as PartyView) &&
     Number(v.seat) >= 0 &&
     Number(v.seat) < n &&
     Number(v.turn) >= 0 &&
@@ -112,16 +115,7 @@ export function validateView(v: unknown): v is PartyView {
     Number(v.roll) <= 6 &&
     Number(v.lastPlayer) < n &&
     (v.board as number[]).every(
-      (x) =>
-        x >= -2 &&
-        x <=
-          (v.game === 'mini-mahjong'
-            ? 135
-            : v.game === 'number-mine'
-              ? 101
-              : v.game === 'mancala'
-                ? 72
-                : 52),
+      (x) => x >= -2 && x <= (v.game === 'mini-mahjong' ? 135 : v.game === 'mancala' ? 72 : 52),
     ) &&
     (v.selected as number[]).every((x) => x >= 0 && x < (v.game === 'mini-mahjong' ? 136 : 120)) &&
     (v.lock as number[]).every((x) => x >= 0 && x <= 3) &&
@@ -131,9 +125,7 @@ export function validateView(v: unknown): v is PartyView {
     ) &&
     (v.hand as number[]).every((c) => c >= 0 && c <= (v.game === 'mini-mahjong' ? 135 : 52)) &&
     new Set(v.hand as number[]).size === (v.hand as number[]).length &&
-    (v.table as number[]).every(
-      (c) => c >= 0 && c <= (v.game === 'mini-mahjong' ? 135 : v.game === 'number-mine' ? 100 : 52),
-    ) &&
+    (v.table as number[]).every((c) => c >= 0 && c <= (v.game === 'mini-mahjong' ? 135 : 52)) &&
     (v.counts as number[]).every((c) => c >= 0 && c <= 53)
   )
 }

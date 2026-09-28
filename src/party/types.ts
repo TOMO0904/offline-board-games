@@ -1,10 +1,13 @@
 import type { PartyId, PartyRules } from './catalog'
 export interface PartyAction {
   type:
+    | 'buy'
+    | 'sell'
+    | 'build'
+    | 'deliver'
     | 'guess'
     | 'choose'
     | 'vote'
-    | 'place'
     | 'discard'
     | 'play'
     | 'pass'
@@ -41,6 +44,7 @@ export interface PartyState {
   hands: number[][]
   stock: number[]
   table: number[]
+  economy: number[]
   board: number[]
   scores: number[]
   roundScores: number[]
@@ -81,6 +85,7 @@ export interface PartyView {
   counts: number[]
   stockCount: number
   table: number[]
+  economy: number[]
   board: number[]
   scores: number[]
   roundScores: number[]

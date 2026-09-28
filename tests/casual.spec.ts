@@ -20,27 +20,20 @@ async function paste(p: Page, signal: string) {
   await p.getByLabel('相手の接続テキストを貼り付け').fill(signal)
   await p.getByRole('button', { name: '接続情報を読み込む', exact: true }).click()
 }
-test('9新ゲームを320pxでオフライン操作し、会話と秘密投票を1台で完了', async ({ page, context }) => {
+test('麻雀・推理ゲームを320pxでオフライン操作し、会話と秘密投票を1台で完了', async ({
+  page,
+  context,
+}) => {
   const errors: string[] = []
   page.on('pageerror', (e) => errors.push(e.message))
   await page.setViewportSize({ width: 320, height: 740 })
   await page.goto(url)
-  await expect(page.getByText('29 / 29 GAMES', { exact: true })).toBeVisible()
+  await expect(page.getByText('25 / 25 GAMES', { exact: true })).toBeVisible()
   await expect(page.getByText('オフライン利用可能', { exact: true })).toBeVisible()
   await context.setOffline(true)
   await page.reload()
-  for (const name of [
-    'かんたん麻雀',
-    'ヒット＆ブロー',
-    'ハイ＆ロー',
-    '数字の地雷',
-    'ひみつじゃんけん',
-    'ワードウルフ',
-    'ジェスチャー',
-    '21カウント',
-    '三目並べ',
-  ]) {
-    await start(page, name, name === '三目並べ' ? 2 : name === 'かんたん麻雀' ? 4 : 3)
+  for (const name of ['かんたん麻雀', 'ヒット＆ブロー', 'ワードウルフ']) {
+    await start(page, name, name === 'かんたん麻雀' ? 4 : 3)
     await uncover(page)
     if (name === 'かんたん麻雀') {
       await expect(page.locator('.hand-area .mahjong-tile')).toHaveCount(14)
@@ -54,24 +47,6 @@ test('9新ゲームを320pxでオフライン操作し、会話と秘密投票�
         await page.getByRole('button', { name: n, exact: true }).click()
       await page.getByRole('button', { name: 'この並びで予想する', exact: true }).click()
       await expect(page.locator('.guess-history li')).toHaveCount(1)
-    }
-    if (name === 'ハイ＆ロー') {
-      await page.getByRole('button', { name: '↑ 大きい', exact: true }).click()
-      await expect(page.locator('.card-row .playing-card')).toHaveCount(2)
-      await page.getByRole('button', { name: '確認して次へ', exact: true }).click()
-    }
-    if (name === '数字の地雷') {
-      await page.getByLabel('選ぶ数字', { exact: true }).fill('50')
-      await page.getByRole('button', { name: 'この数字にする', exact: true }).click()
-    }
-    if (name === 'ひみつじゃんけん') {
-      for (const choice of ['✊ グー', '✌ チョキ', '✊ グー']) {
-        await uncover(page)
-        await page.getByRole('button', { name: choice, exact: true }).click()
-        await page.getByRole('button', { name: 'この手に決める', exact: true }).click()
-      }
-      await expect(page.locator('.privacy-cover')).toHaveCount(0)
-      await expect(page.locator('.result-list li')).toHaveCount(3)
     }
     if (name === 'ワードウルフ') {
       for (let i = 0; i < 3; i++) {
@@ -92,17 +67,6 @@ test('9新ゲームを320pxでオフライン操作し、会話と秘密投票�
       await page.getByRole('button', { name: '最終結果を見る', exact: true }).click()
       await expect(page.locator('.turn-panel')).toContainText('ゲーム終了')
     }
-    if (name === 'ジェスチャー') {
-      await page.getByRole('button', { name: 'お題を見る', exact: true }).click()
-      await page.screenshot({ path: 'test-results/casual-charades-prompt-320.png', fullPage: true })
-      await page.getByRole('button', { name: 'お題を隠す', exact: true }).click()
-      await page.getByRole('button', { name: '当ててもらえた', exact: true }).click()
-      await expect(page.locator('.privacy-cover')).toBeVisible()
-    }
-    if (name === '21カウント')
-      await page.getByRole('button', { name: '1・2・3', exact: true }).click()
-    if (name === '三目並べ')
-      await page.getByRole('button', { name: '1行1列 空き', exact: true }).click()
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
     await page.screenshot({ path: `test-results/casual-${name}-320.png`, fullPage: true })
     await page.getByRole('button', { name: '← ホーム', exact: true }).click()

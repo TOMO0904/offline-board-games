@@ -311,26 +311,20 @@ function candidates(s: PartyState): PartyAction[] {
       return s.roll
         ? [{ type: 'score', index: s.board.slice(s.turn * 12, s.turn * 12 + 12).indexOf(-1) }]
         : [{ type: 'roll' }]
+    case 'life-journey':
+      return s.phase === 'challenge'
+        ? [0, 1, 2, 3, 4].map((index) => ({ type: 'choose', index }))
+        : [{ type: s.phase === 'reveal' ? 'next' : 'roll' }]
+    case 'island-market':
+      return [{ type: 'next' }]
     case 'mini-mahjong':
       return s.phase === 'round-end' ? [{ type: 'next' }] : [{ type: 'discard', index: h[0] }]
     case 'hit-blow':
       return [{ type: 'guess', cards: [...s.stock] }]
-    case 'high-low':
-      return s.phase === 'reveal' ? [{ type: 'next' }] : [{ type: 'guess', index: 1 }]
-    case 'number-mine':
-      return [{ type: 'guess', index: Math.floor((s.board[0] + s.board[1]) / 2) }]
-    case 'rps':
-      return s.phase === 'reveal' ? [{ type: 'next' }] : [{ type: 'choose', index: s.turn % 3 }]
     case 'word-wolf':
       return s.phase === 'reveal'
         ? [{ type: 'vote', target: (s.turn + 1) % s.names.length }]
         : [{ type: 'next' }]
-    case 'charades':
-      return [{ type: 'score' }]
-    case 'count-21':
-      return [{ type: 'take', index: 1 }]
-    case 'tic-tac-toe':
-      return [{ type: 'place', index: s.board.indexOf(-1) }]
     case 'daifugo':
       return [...h.map((c) => ({ type: 'play' as const, cards: [c] })), { type: 'pass' }]
     case 'sevens':

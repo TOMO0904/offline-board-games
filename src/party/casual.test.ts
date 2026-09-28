@@ -127,61 +127,6 @@ describe('会話・推理・短時間ゲーム', () => {
     expect(s.winners).toEqual([])
     expect(s.table).toEqual([1, 2, 3])
   })
-  it('ハイローはAが最小、同値は0点、全員の回数が同じ', () => {
-    let s = create('high-low', 2, { rounds: 1 })
-    s.table = [0]
-    s.stock = [12]
-    s = act(s, { type: 'guess', index: 1 })
-    expect(s.scores).toEqual([1, 0])
-    expect(s.table).toEqual([0, 12])
-    s = act(s, { type: 'next' })
-    s.stock = [25]
-    s = act(s, { type: 'guess', index: 0 })
-    expect(s.scores).toEqual([1, 0])
-    expect(s.info).toContain('同じ')
-    s = act(s, { type: 'next' })
-    expect(s.phase).toBe('finished')
-    expect(s.winners).toEqual([0])
-  })
-  it('地雷は範囲を狭め、外れた数字の再選択を拒否', () => {
-    let s = create('number-mine')
-    s.stock = [50]
-    s = act(s, { type: 'guess', index: 20 })
-    expect(s.board).toEqual([20, 101])
-    expect(() => act(s, { type: 'guess', index: 20 })).toThrow()
-    s = act(s, { type: 'guess', index: 70 })
-    expect(s.board).toEqual([20, 70])
-    s = act(s, { type: 'guess', index: 50 })
-    expect(s.losers).toEqual([2])
-    expect(s.winners).toEqual([0, 1])
-  })
-  it.each([
-    [0, 1, 0],
-    [1, 2, 1],
-    [2, 0, 2],
-  ])('じゃんけん %s対%sは%sが勝ち、全員まで非公開', (a, b, win) => {
-    let s = create('rps', 3, { rounds: 1 })
-    s = act(s, { type: 'choose', index: a })
-    expect(partyView(s, 1).table).toEqual([])
-    expect(partyView(s, 1).hand).toEqual([])
-    s = act(s, { type: 'choose', index: b })
-    s = act(s, { type: 'choose', index: a })
-    expect(s.table).toEqual([a, b, a])
-    expect(s.scores).toEqual([1, 0, 1])
-    expect(s.table[0]).toBe(win)
-    s = act(s, { type: 'next' })
-    expect(s.winners).toEqual([0, 2])
-  })
-  it('じゃんけんの3種類と全員同じはあいこ', () => {
-    for (const choices of [
-      [0, 1, 2],
-      [2, 2, 2],
-    ]) {
-      let s = create('rps')
-      for (const index of choices) s = act(s, { type: 'choose', index })
-      expect(s.scores).toEqual([0, 0, 0])
-    }
-  })
   it('ワードウルフは少数派1人、投票途中は非公開、多数派勝利', () => {
     let s = create('word-wolf', 3, { rounds: 1 })
     s.stock = [2]
@@ -213,42 +158,6 @@ describe('会話・推理・短時間ゲーム', () => {
     expect(s.pending).toEqual([])
     expect(s.round).toBe(1)
   })
-  it('ジェスチャーのお題は演じる人だけ、得点とパス', () => {
-    let s = create('charades', 2, { rounds: 1 })
-    expect(partyView(s, 0).hand).toHaveLength(1)
-    expect(partyView(s, 1).hand).toEqual([])
-    s = act(s, { type: 'score' })
-    expect(s.hands[0]).toEqual([])
-    expect(s.hands[1]).toHaveLength(1)
-    s = act(s, { type: 'pass' })
-    expect(s.phase).toBe('finished')
-    expect(s.scores).toEqual([1, 0])
-  })
-  it('21の直前で超過・0を拒否し、最後の人だけが負け', () => {
-    const s = create('count-21')
-    s.bank = 20
-    expect(() => act(s, { type: 'take', index: 0 })).toThrow()
-    expect(() => act(s, { type: 'take', index: 2 })).toThrow()
-    expect(act(s, { type: 'take', index: 1 }).winners).toEqual([1, 2])
-  })
-  it.each([
-    [0, 3, 1, 4, 2],
-    [0, 1, 3, 2, 6],
-    [0, 1, 4, 2, 8],
-  ])('三目並べで縦横斜めに勝つ %j', (...moves: number[]) => {
-    let s = create('tic-tac-toe', 2)
-    for (const index of moves) s = act(s, { type: 'place', index })
-    expect(s.winners).toEqual([0])
-    expect(() => act(s, { type: 'place', index: 5 })).toThrow()
-  })
-  it('三目並べの埋まったマスを拒否し引き分けを判定', () => {
-    let s = create('tic-tac-toe', 2)
-    s = act(s, { type: 'place', index: 0 })
-    expect(() => act(s, { type: 'place', index: 0 })).toThrow()
-    for (const index of [1, 2, 4, 3, 5, 7, 6, 8]) s = act(s, { type: 'place', index })
-    expect(s.phase).toBe('finished')
-    expect(s.winners).toEqual([])
-  })
 })
 
 describe('新ゲームの通信境界', () => {
@@ -256,11 +165,8 @@ describe('新ゲームの通信境界', () => {
     expect(validateAction({ type: 'guess', cards: Array(3) })).toBe(false)
     const cases: [PartyId, Record<string, unknown>][] = [
       ['mini-mahjong', { hand: [136] }],
-      ['number-mine', { board: [40, 20] }],
-      ['rps', { table: [0, 8, 2] }],
       ['word-wolf', { table: [9, 0, 1] }],
       ['hit-blow', { board: [0, 1, 2, 3, 3, 3] }],
-      ['tic-tac-toe', { board: Array(9).fill(2) }],
     ]
     for (const [game, fields] of cases) {
       const v = partyView(create(game, partyCatalog[game].min), 0)
@@ -268,11 +174,10 @@ describe('新ゲームの通信境界', () => {
     }
   })
   it('非公開の山札を変えても公開ビューは同じ', () => {
-    for (const game of ['mini-mahjong', 'hit-blow', 'number-mine', 'word-wolf'] as const) {
+    for (const game of ['mini-mahjong', 'hit-blow', 'word-wolf'] as const) {
       const s = create(game),
         a = partyView(s, 1)
       s.stock.reverse()
-      if (game === 'number-mine') s.stock = [s.stock[0] === 1 ? 2 : 1]
       expect(partyView(s, 1)).toEqual(a)
     }
   })

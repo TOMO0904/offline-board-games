@@ -1,5 +1,5 @@
 import type { PartyView } from './types'
-import { gestureWords, wolfPairs } from './words'
+import { wolfPairs } from './words'
 
 // Called after the shared schema has checked every field and array element.
 export function validateCasualView(v: PartyView): boolean {
@@ -43,24 +43,6 @@ export function validateCasualView(v: PartyView): boolean {
       }
       return v.table.every((x) => x >= 1 && x <= 6) && new Set(v.table).size === v.table.length
     }
-    case 'high-low':
-      return [1, 2].includes(v.table.length) && v.table.every((c) => c < 52) && !v.hand.length
-    case 'number-mine':
-      return (
-        v.board.length === 2 &&
-        v.board[0] >= 0 &&
-        v.board[1] <= Number(v.rules.limit) + 1 &&
-        v.board[0] < v.board[1] &&
-        v.table.length <= 1 &&
-        !v.hand.length &&
-        v.table.every((x) => x >= 1 && x <= Number(v.rules.limit))
-      )
-    case 'rps':
-      return (
-        v.hand.length <= 1 &&
-        [0, n].includes(v.table.length) &&
-        [...v.hand, ...v.table].every((c) => c >= 0 && c <= 2)
-      )
     case 'word-wolf':
       return (
         v.hand.length === 1 &&
@@ -73,17 +55,6 @@ export function validateCasualView(v: PartyView): boolean {
             v.table.every((x) => x >= 0) &&
             v.table.slice(1).every((c) => c < wolfPairs.length * 2)))
       )
-    case 'charades':
-      return v.hand.length <= 1 && v.hand.every((c) => c < gestureWords.length)
-    case 'count-21':
-      return (
-        v.bank <= Number(v.rules.goal) &&
-        v.table.length <= 3 &&
-        v.table.every((x) => x >= 1 && x <= Number(v.rules.goal)) &&
-        !v.hand.length
-      )
-    case 'tic-tac-toe':
-      return v.board.length === 9 && v.board.every((x) => x >= -1 && x <= 1) && !v.hand.length
     default:
       return true
   }

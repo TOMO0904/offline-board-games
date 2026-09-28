@@ -2,6 +2,7 @@ import { isRecord } from '../games/core/types'
 import { normalizeRules, partyCatalog, type PartyId } from './catalog'
 import { playDaifugo } from './daifugo'
 import { initTabletop, playTabletop } from './tabletop'
+import { initEconomy, playEconomy } from './economy'
 import { initCasual, playCasual } from './casual'
 import {
   cardText,
@@ -91,6 +92,7 @@ export function createParty(
     hands: [],
     stock: [],
     table: [],
+    economy: [],
     board: [],
     scores: names.map(() => 0),
     roundScores: names.map(() => 0),
@@ -117,15 +119,13 @@ export function createParty(
   }
   deal(s, [])
   switch (game) {
+    case 'life-journey':
+    case 'island-market':
+      initEconomy(s, rng)
+      break
     case 'mini-mahjong':
     case 'hit-blow':
-    case 'high-low':
-    case 'number-mine':
-    case 'rps':
     case 'word-wolf':
-    case 'charades':
-    case 'count-21':
-    case 'tic-tac-toe':
       initCasual(s, rng)
       break
     case 'daifugo':
@@ -195,10 +195,13 @@ export function validateAction(a: unknown): a is PartyAction {
   return (
     isRecord(a) &&
     [
+      'buy',
+      'sell',
+      'build',
+      'deliver',
       'guess',
       'choose',
       'vote',
-      'place',
       'discard',
       'play',
       'pass',
@@ -328,15 +331,13 @@ export function applyParty(
     a = action,
     p = seat
   switch (s.game) {
+    case 'life-journey':
+    case 'island-market':
+      playEconomy(s, a, rng)
+      break
     case 'mini-mahjong':
     case 'hit-blow':
-    case 'high-low':
-    case 'number-mine':
-    case 'rps':
     case 'word-wolf':
-    case 'charades':
-    case 'count-21':
-    case 'tic-tac-toe':
       playCasual(s, a, rng)
       break
     case 'mancala':
@@ -605,6 +606,7 @@ export function partyView(s: PartyState, seat: number): PartyView {
         : s.game === 'boxes'
           ? [...s.board, ...s.matched]
           : s.board,
+    economy: s.economy,
     scores: s.scores,
     roundScores: s.roundScores,
     passed: s.passed,

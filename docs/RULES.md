@@ -4,7 +4,7 @@
 
 ## 2人用の対局時計
 
-今回さらに追加した、かんたん麻雀・会話・短時間ゲーム9種類は [CASUAL_GAMES.md](CASUAL_GAMES.md) を参照してください。現在は全29ゲームです。
+かんたん麻雀・推理ゲームは [CASUAL_GAMES.md](CASUAL_GAMES.md)、人生すごろく・経営ゲームは [ECONOMY_GAMES.md](ECONOMY_GAMES.md) を参照してください。現在は全25ゲームです。
 
 既存5ゲームすべてで、無制限、1・3・5・10・15・30・60分を選べます。「10分切れ負け」「5分＋1手3秒」「将棋10分＋30秒読み」のボタンもあります。
 
@@ -96,4 +96,4 @@
 
 ## あわせて調べた候補（未実装）
 
-[任天堂のトランプ一覧](https://www.nintendo.com/jp/others/playing_cards/howtoplay/index.html)のスピード（2人）、スローモー（3〜8人）、ポーカー（2〜6人）、[セブンブリッジ（2〜6人）](https://www.nintendo.com/jp/others/playing_cards/howtoplay/seven_bridge/index.html)、[PagatのPig/Spoons](https://www.pagat.com/passing/pig.html)も調査しました。スピード・スローモー・Spoonsは同時操作と反射速度、セブンブリッジは割り込みの優先裁定が必要です。現在の29ゲームには含めず、現在は通信遅延の影響を抑えられる順番制のゲームを実装しています。ポーカーはこのアプリでは未実装です。
+[任天堂のトランプ一覧](https://www.nintendo.com/jp/others/playing_cards/howtoplay/index.html)のスピード（2人）、スローモー（3〜8人）、ポーカー（2〜6人）、[セブンブリッジ（2〜6人）](https://www.nintendo.com/jp/others/playing_cards/howtoplay/seven_bridge/index.html)、[PagatのPig/Spoons](https://www.pagat.com/passing/pig.html)も調査しました。スピード・スローモー・Spoonsは同時操作と反射速度、セブンブリッジは割り込みの優先裁定が必要です。現在の25ゲームには含めず、現在は通信遅延の影響を抑えられる順番制のゲームを実装しています。ポーカーはこのアプリでは未実装です。
