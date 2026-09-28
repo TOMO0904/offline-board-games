@@ -2,6 +2,12 @@
 
 検証日: 2026-09-26〜28。Windows / Node.js 24.21.0 / Chromium 153（Playwright 1.63.0の同梱ブラウザ）。ブラウザのUser-Agent変更は実際のSafari/iOSでの試験ではありません。
 
+## 現行25ゲーム版の公開確認
+
+GitHub Actions run `36384729108` も成功。npm ci、lint、型検査、221件のUnit Test、17件のブラウザテスト、本番ビルドをLinux環境でも確認しました。
+
+2026-09-28、コミット `dd7fc6c` のVercel本番デプロイ成功を確認。https://offline-board-games.vercel.app/ を390px幅の新規Chromiumで開き、25ゲーム表示、除外6ゲームの非表示、Service Worker準備完了を確認しました。全面オフラインへ切り替えて再読み込みし、ライフジャーニーの進学・サイコロとアイランド商会の農園建設を操作できました。未処理の画面エラー・外部オリジンへのHTTP要求・横はみ出しは0。実機のiOS/Android試験は下記のとおり未実施です。
+
 ## 初回公開の記録（29ゲーム版）
 
 GitHub Actions run `36359097127` のbuildジョブも成功しました（依存導入、lint、型検査、Unit Test、14件のブラウザテスト、サブパスbuild）。非公開リポジトリのPagesデプロイは設定どおりスキップしています。
