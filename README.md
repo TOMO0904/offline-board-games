@@ -1,6 +1,6 @@
 # Offline Board Games
 
-[English](README.md) | [日本語](README.ja.md)
+**English** | [日本語](README.ja.md)
 
 **Live app: <https://offline-board-games.vercel.app/>** — open it on a phone, add it to the home screen, and wait for the "available offline" indicator.
 
@@ -56,4 +56,4 @@ Automated browser tests do not guarantee connectivity on real iPhone/Android hot
 - State digests detect desync; they are not signatures. The host holds all hidden state, so play with people you trust.
 - No computer opponent, remote internet play or spectating.
 
-The full documentation (Japanese) is in [README.ja.md](README.ja.md).
+The full documentation (Japanese), including rule notes, connection steps and deployment, is in [docs/DETAILS.ja.md](docs/DETAILS.ja.md).
