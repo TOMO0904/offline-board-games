@@ -20,8 +20,7 @@ An offline-first progressive web app (PWA) with 25 board and card games for play
 
 ## Games
 
-Two-player: Othello, Chess, Shogi, Gomoku, Connect Four, plus Mancala (Kalah).
-Two to seven players: Nim, Dominoes, Yacht, Dice, Daifugo, Sevens, Old Maid, Go Fish, Concentration, Pig, Dots and Boxes, a life-path board game and a trading game; three to seven players: Hearts and Doubt. See [docs/RULES.md](docs/RULES.md) for rules, options and sources (in Japanese).
+Two-player classics: Othello, Chess, Shogi, Gomoku, Connect Four. Additional games for 2–7 players include Mancala, Nim, Dominoes, Yacht, Daifugo, Sevens, Old Maid, Go Fish, Concentration, Hearts, Doubt, Dots and Boxes, Hit and Blow, Word Wolf, and two original party games (a life-path board game and a trading game). See [docs/RULES.md](docs/RULES.md) for the exact list, rules, options and sources (in Japanese).
 
 *Othello and Connect Four are trademarks of their respective owners. This is an unofficial, non-commercial implementation of traditional game rules.*
 
